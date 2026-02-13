@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geofence Mapper - Interactive Boundary Visualization</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <h1>📍 Geofence Mapper</h1>
+        
+        <div class="upload-section">
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".xlsx,.xls" />
+                <label for="fileInput" class="file-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Choose Excel File
+                </label>
+            </div>
+            
+            <div class="file-name-display">
+                <span class="file-name" id="fileName">No file chosen</span>
+            </div>
+            
+            <div class="download-template">
+                <button class="download-btn" id="downloadTemplateBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Sample Template
+                </button>
+            </div>
+            
+            <div id="error"></div>
+        </div>
+        
+        <!-- Geofence Filter Section -->
+        <div class="filter-section" id="filterSection" style="display: none;">
+            <div class="filter-header">
+                <h3>🎯 Select Geofences</h3>
+                <div class="filter-actions">
+                    <button class="action-btn" id="selectAllBtn">Select All</button>
+                    <button class="action-btn" id="clearAllBtn">Clear All</button>
+                </div>
+            </div>
+            
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search geofences by name..." />
+            </div>
+            
+            <div class="geofence-checkboxes" id="geofenceCheckboxes"></div>
+            
+            <div class="selected-count">
+                <span id="selectedCount">0 selected</span>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+        
+        <div class="geofence-info" id="geofenceInfo" style="display: none;">
+            <h3>🎯 Loaded Geofences</h3>
+            <div class="geofence-list" id="geofenceList"></div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/excel.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/particles.js"></script>
+</body>
+</html>
