@@ -10,8 +10,8 @@
     --primary-dark: #4f46e5;
     --secondary: #10b981;
     --accent: #f59e0b;
-    --bg-gradient-start: #0f172a;
-    --bg-gradient-end: #1e293b;
+    --bg-gradient-start: #143C41;
+    --bg-gradient-end: #0F2D32;
     --card-bg: rgba(255, 255, 255, 0.08);
     --card-border: rgba(255, 255, 255, 0.1);
     --text-primary: #f8fafc;
@@ -141,7 +141,7 @@ h1 {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    background: rgb(64, 147, 158);
 }
 
 .file-input-wrapper {
@@ -159,7 +159,7 @@ input[type="file"] {
     align-items: center;
     gap: 10px;
     padding: 14px 32px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: rgb(64, 147, 158);
     color: white;
     border-radius: 12px;
     cursor: pointer;
@@ -213,7 +213,7 @@ input[type="file"] {
     align-items: center;
     gap: 10px;
     padding: 12px 28px;
-    background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+    background: rgb(64, 147, 158);
     color: white;
     border-radius: 12px;
     cursor: pointer;
@@ -373,7 +373,7 @@ input[type="file"] {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--primary));
+    background: rgb(64, 147, 158);
 }
 
 .geofence-info h3 {
@@ -469,7 +469,7 @@ input[type="file"] {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--secondary), var(--primary));
+    background: rgb(64, 147, 158);
 }
 
 .filter-header {
@@ -710,4 +710,64 @@ input[type="file"] {
 
 .loading {
     animation: pulse 2s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────
+   Layer Switcher Control
+   ───────────────────────────────────────────── */
+.layer-switcher {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+    border: none !important;
+}
+
+.layer-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: #111;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    color: #94a3b8;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+    text-align: left;
+    width: 100%;
+}
+
+.layer-btn:last-child {
+    border-bottom: none;
+}
+
+.layer-btn:hover {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.layer-btn--active {
+    background: rgb(64, 147, 158) !important;
+    color: #fff !important;
+}
+
+.layer-btn--active:hover {
+    background: #3a8a96 !important;
+}
+
+.layer-btn__icon {
+    font-size: 15px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.layer-btn__label {
+    letter-spacing: 0.01em;
 }

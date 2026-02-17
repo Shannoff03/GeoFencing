@@ -1,6 +1,6 @@
 /**
  * Configuration file for the Geofence Mapper
- * Contains all constants and settings
+ * WKT POLYGON format edition
  */
 
 const CONFIG = {
@@ -11,7 +11,7 @@ const CONFIG = {
         tileLayerUrl: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         attribution: '© OpenStreetMap contributors © CARTO',
         maxZoom: 19,
-        boundsePadding: 0.1 // 10% padding when fitting bounds
+        boundsePadding: 0.1
     },
 
     // Geofence visualization
@@ -30,34 +30,27 @@ const CONFIG = {
         fillOpacity: 0.2
     },
 
-    // Excel column names (case-insensitive)
+    // Excel column names expected in uploaded files
     excel: {
-        requiredColumns: ['minx', 'miny', 'maxx', 'maxy'],
-        optionalColumns: ['name']
+        // At least one of these column names must be present (case-insensitive)
+        // alongside an optional "name" column
+        requiredColumns: ['polygon'],        // primary column name
+        alternateColumns: ['geometry', 'wkt'] // also accepted
     },
 
-    // Template data for sample Excel file
+    // Sample rows for the downloadable template (WKT POLYGON strings)
     template: [
-        { 
-            name: 'Abu Dhabi Downtown', 
-            minx: 54.350, 
-            miny: 24.460, 
-            maxx: 54.380, 
-            maxy: 24.480 
+        {
+            name: 'Abu Dhabi Downtown',
+            polygon: 'POLYGON ((54.350 24.460, 54.380 24.460, 54.380 24.480, 54.350 24.480, 54.350 24.460))'
         },
-        { 
-            name: 'Yas Island', 
-            minx: 54.590, 
-            miny: 24.470, 
-            maxx: 54.630, 
-            maxy: 24.500 
+        {
+            name: 'Yas Island',
+            polygon: 'POLYGON ((54.590 24.470, 54.630 24.470, 54.630 24.500, 54.590 24.500, 54.590 24.470))'
         },
-        { 
-            name: 'Saadiyat Island', 
-            minx: 54.410, 
-            miny: 24.530, 
-            maxx: 54.450, 
-            maxy: 24.560 
+        {
+            name: 'Custom L-Shape',
+            polygon: 'POLYGON ((54.410 24.530, 54.440 24.530, 54.440 24.545, 54.425 24.545, 54.425 24.560, 54.410 24.560, 54.410 24.530))'
         }
     ],
 
@@ -65,9 +58,9 @@ const CONFIG = {
     messages: {
         noFile: 'No file chosen',
         noData: 'No data found in Excel file',
-        missingColumns: 'Excel file must contain columns: minx, miny, maxx, maxy',
-        invalidCoordinates: 'Invalid coordinates found',
-        noValidGeofences: 'No valid geofences found in the Excel file',
+        missingColumns: 'Excel file must contain a "polygon" column with WKT POLYGON strings (e.g. POLYGON ((lon lat, lon lat, ...)))',
+        invalidCoordinates: 'Invalid WKT polygon found',
+        noValidGeofences: 'No valid polygon geofences found in the Excel file',
         readError: 'Error reading Excel file: '
     }
 };

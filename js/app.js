@@ -181,10 +181,10 @@ const App = {
                 const checkboxItem = checkbox.closest('.checkbox-item');
                 
                 if (checkbox.checked) {
-                    MapHandler.showGeofence(geofenceId);
+                    MapHandler.showGeofence(geofenceId, true); // ← true = fly to it
                     checkboxItem.classList.add('selected');
                 } else {
-                    MapHandler.hideGeofence(geofenceId);
+                     MapHandler.hideGeofence(geofenceId);
                     checkboxItem.classList.remove('selected');
                 }
 
