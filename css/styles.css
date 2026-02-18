@@ -81,7 +81,8 @@ body::after {
 /* Header */
 h1 {
     color: var(--text-primary);
-    margin-bottom: 30px;
+    margin: 0;
+    margin-top: 8px;  /* Push heading text down slightly */
     font-size: 48px;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -89,8 +90,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: slideInDown 0.6s ease-out;
-    text-align: center;
+    line-height: 1;  /* Tighter line height to match logo height better */
 }
 
 @keyframes slideInDown {
@@ -770,4 +770,21 @@ input[type="file"] {
 
 .layer-btn__label {
     letter-spacing: 0.01em;
+}
+
+.company-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    animation: fadeIn 0.8s ease-out;
+    margin-top: 6px;  /* Move logo down slightly */
+}
+
+.header-wrapper {
+    display: flex;
+    align-items: center;  /* This vertically centers logo and text */
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 30px;
+    animation: slideInDown 0.6s ease-out;
 }
