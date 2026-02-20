@@ -1,6 +1,8 @@
 /**
  * Excel Handler Module
- * Manages reading and processing Excel files with WKT POLYGON format
+ * Manages reading and processing Excel files with WKT POLYGON format.
+ * Supports both old format (name + polygon/geometry/wkt columns)
+ * and new format (Name + WKTShape columns, plus optional Description/MinX/MaxX etc.)
  */
 
 const ExcelHandler = {
@@ -32,8 +34,8 @@ const ExcelHandler = {
     },
 
     /**
-     * Validate that required columns exist.
-     * Accepts any of: "polygon", "geometry", or "wkt" (case-insensitive).
+     * Validate that at least one recognised polygon column exists.
+     * Accepted column names (case-insensitive): polygon, geometry, wkt, wktshape
      * @param {Array} data - Parsed Excel data
      * @returns {boolean}
      */
@@ -46,18 +48,32 @@ const ExcelHandler = {
             ...(CONFIG.excel.alternateColumns || [])
         ];
 
-        // At least one accepted polygon column must exist
         return accepted.some(col => headers.includes(col));
     },
 
     /**
-     * Parse a WKT POLYGON string into an array of [lat, lng] pairs for Leaflet
-     * Handles both POLYGON and MULTIPOLYGON (uses first ring only for multi)
+     * Resolve the value of the first matching column from a normalised row object.
+     * @param {Object} normalised  - Row with lower-cased keys
+     * @param {Array}  candidates  - Ordered list of column name candidates
+     * @returns {string|undefined}
+     */
+    _resolveColumn(normalised, candidates) {
+        for (const col of candidates) {
+            if (normalised[col] !== undefined && normalised[col] !== '') {
+                return String(normalised[col]).trim();
+            }
+        }
+        return undefined;
+    },
+
+    /**
+     * Parse a WKT POLYGON string into an array of [lat, lng] pairs for Leaflet.
+     * Handles both POLYGON and MULTIPOLYGON (uses first ring only for multi).
      *
      * Input:  "POLYGON ((56.355202 25.134027, 56.355546 25.138925, ...))"
      * Output: [[25.134027, 56.355202], [25.138925, 56.355546], ...]
      *
-     * WKT order is  X(lon) Y(lat);  Leaflet wants [lat, lon]
+     * WKT order is X(lon) Y(lat); Leaflet wants [lat, lon].
      *
      * @param {string} wkt
      * @returns {Array|null}  array of [lat, lng] or null on failure
@@ -67,13 +83,11 @@ const ExcelHandler = {
 
         const clean = wkt.trim().toUpperCase();
 
-        // Accept POLYGON or MULTIPOLYGON
         if (!clean.startsWith('POLYGON') && !clean.startsWith('MULTIPOLYGON')) {
             return null;
         }
 
-        // Extract the first coordinate ring (everything between the first '(' pair)
-        // Works for both POLYGON ((...)) and MULTIPOLYGON (((...), (...)))
+        // Extract the first coordinate ring
         const ringMatch = wkt.match(/\(\s*([^()]+)\s*\)/);
         if (!ringMatch) return null;
 
@@ -92,17 +106,27 @@ const ExcelHandler = {
             coords.push([lat, lng]);           // Leaflet wants [lat, lng]
         }
 
-        // Need at least 3 points for a polygon
         return coords.length >= 3 ? coords : null;
     },
 
     /**
-     * Process raw Excel data into geofence objects
+     * Process raw Excel data into geofence objects.
+     * Supports:
+     *   - New format: Name | Description | MinX | MinY | MaxX | MaxY | Shape | OriginalShape | WKTShape | Speed
+     *   - Old format: name | polygon (or geometry / wkt)
+     *
      * @param {Array} data - Raw Excel rows
-     * @returns {Array} - Processed geofence objects
+     * @returns {Array} - Processed geofence objects { name, coordinates }
      */
     processData(data) {
         const geofences = [];
+
+        // Column name candidates (lower-cased)
+        const nameColumns = CONFIG.excel.nameColumns || ['name'];
+        const wktColumns  = [
+            ...CONFIG.excel.requiredColumns,
+            ...(CONFIG.excel.alternateColumns || [])
+        ]; // e.g. ['polygon', 'geometry', 'wkt', 'wktshape']
 
         data.forEach((row, index) => {
             // Normalise keys to lower-case for lookup
@@ -111,12 +135,14 @@ const ExcelHandler = {
                 normalised[k.trim().toLowerCase()] = row[k];
             });
 
-            const name      = normalised['name'] || `Geofence ${index + 1}`;
-            const wktValue  = normalised['polygon'] || normalised['geometry'] || normalised['wkt'] || '';
-            const wktString = String(wktValue).trim();
+            // --- Resolve name ---
+            const name = this._resolveColumn(normalised, nameColumns) || `Geofence ${index + 1}`;
+
+            // --- Resolve WKT value ---
+            const wktString = this._resolveColumn(normalised, wktColumns) || '';
 
             if (!wktString) {
-                console.warn(`Row ${index + 1} ("${name}"): empty polygon cell — skipping`);
+                console.warn(`Row ${index + 1} ("${name}"): empty polygon/wkt cell — skipping`);
                 return;
             }
 

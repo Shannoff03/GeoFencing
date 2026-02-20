@@ -32,10 +32,14 @@ const CONFIG = {
 
     // Excel column names expected in uploaded files
     excel: {
-        // At least one of these column names must be present (case-insensitive)
-        // alongside an optional "name" column
-        requiredColumns: ['polygon'],        // primary column name
-        alternateColumns: ['geometry', 'wkt'] // also accepted
+        // Name column candidates (case-insensitive, first match wins)
+        nameColumns: ['name'],
+
+        // Polygon/WKT column candidates (case-insensitive, first match wins)
+        // Supports both the old format (polygon / geometry / wkt)
+        // and the new format (wktshape)
+        requiredColumns: ['polygon'],
+        alternateColumns: ['geometry', 'wkt', 'wktshape']
     },
 
     // Sample rows for the downloadable template (WKT POLYGON strings)
@@ -58,7 +62,7 @@ const CONFIG = {
     messages: {
         noFile: 'No file chosen',
         noData: 'No data found in Excel file',
-        missingColumns: 'Excel file must contain a "polygon" column with WKT POLYGON strings (e.g. POLYGON ((lon lat, lon lat, ...)))',
+        missingColumns: 'Excel file must contain a polygon/WKT column (accepted names: "polygon", "geometry", "wkt", "wktshape") with WKT POLYGON strings',
         invalidCoordinates: 'Invalid WKT polygon found',
         noValidGeofences: 'No valid polygon geofences found in the Excel file',
         readError: 'Error reading Excel file: '
